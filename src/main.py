@@ -21,7 +21,7 @@ spreadsheets = [{"file_name": os.path.join(SOURCE_DIRECTORY, item),
                  "sheet_name": "Sheet1"} for item in os.listdir(SOURCE_DIRECTORY)]
 
 
-#___Exract Entities:
+#___Extract Entities:
 items = []
 for spreadsheet in spreadsheets:
     items.append(extract_entities(spreadsheet))
