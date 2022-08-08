@@ -6,6 +6,7 @@
 
 #___Import Modules:
 import re
+import numpy as np
 from datetime import datetime
 
 
@@ -48,5 +49,9 @@ def extract_targets(index, data, targets=[]):
                 })
 
 
-def find_target(anchors, targets):
-    pass
+def extract_content(anchors, targets):
+    
+    for anchor in anchors:
+        if targets:
+            distances = [abs(target.get("index") - anchor.get("index")) for target in targets]
+            return targets[np.argmin(distances)]

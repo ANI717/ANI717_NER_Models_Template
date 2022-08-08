@@ -6,4 +6,6 @@
 
 #___Functions:
 def postprocess_item(item):
+    if item:
+        pass
     return item

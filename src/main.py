@@ -28,4 +28,4 @@ for spreadsheet in spreadsheets:
 
 #___Print Entities
 for item in items:
-    print(item.get("date"))
+    print(item.get("entities").get("date").get("postprocessed_content"))

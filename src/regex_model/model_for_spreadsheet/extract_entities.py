@@ -15,23 +15,27 @@ from regex_model.postprocess_entity import postprocess_date
 #___Functions:
 def extract_entities_from_list(data):
     
-    # initialize local variables
-    date = None
+    # initialize variables
+    date_content = None
     date_anchors = []
     date_targets = []
     
-    # extract matched anchors and targets
+    # extract anchors and targets
     for index in range(len(data)):
         extract_date.extract_anchors(index, data, date_anchors)
         extract_date.extract_targets(index, data, date_targets)
     
     
-    # extract actual targets
-    date = extract_date.find_target(date_anchors, date_targets)
-    if date:
-        date = postprocess_date.postprocess_item(date)
+    # extract content
+    date_content = extract_date.extract_content(date_anchors, date_targets)
+    date = {
+        "content": date_content,
+        "anchors": date_anchors,
+        "targets": date_targets,
+        "postprocessed_content": postprocess_date.postprocess_item(date_content.get("content")),
+        }
     
-    return date, date_anchors, date_targets
+    return date
 
 
 
@@ -40,15 +44,17 @@ def extract_entities(spreadsheet):
     content = content_from_spreadsheet(spreadsheet.get("file_name"), spreadsheet.get("sheet_name"))
     content_list = list_from_dataframe(content.get("content"), filter_item=True)
     
-    (date, date_anchors, date_targets) = extract_entities_from_list(content_list.get("list_by_row") + content_list.get("list_by_column"))
+    date = extract_entities_from_list(content_list.get("list_by_row") + content_list.get("list_by_column"))
     
     return {
         "file_name": spreadsheet.get("file_name"),
         "sheet_name": spreadsheet.get("sheet_name"),
-        "content": content.get("content"),
-        "list_by_row": content_list.get("list_by_row"),
-        "list_by_column": content_list.get("list_by_column"),
-        "date": date,
-        "date_anchors": date_anchors,
-        "date_targets": date_targets,
+        "content": {
+            "content": content.get("content"),
+            "list_by_row": content_list.get("list_by_row"),
+            "list_by_column": content_list.get("list_by_column"),
+            },
+        "entities": {
+            "date": date
+            },
         }
